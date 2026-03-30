@@ -3,31 +3,32 @@
 # ============================================================
 # This file tells git which files to NEVER track or commit.
 # Lines starting with # are comments.
+# NOTE: git does NOT support inline comments — # must be on its own line.
 
 # ------------------------------------------------------------
 # SECRETS — never commit these
 # ------------------------------------------------------------
-.env               # Your real API keys live here — keep it local
-*.pem              # SSL certificates
-*.key              # Private keys
+.env
+*.pem
+*.key
 secrets.json
 
 # ------------------------------------------------------------
 # Python build artifacts
 # ------------------------------------------------------------
-__pycache__/       # Compiled bytecode cache
-*.py[cod]          # .pyc, .pyo, .pyd compiled files
-*.so               # Compiled C extensions
-*.egg              # Old Python egg packages
-*.egg-info/        # Package metadata from setuptools
-dist/              # Built distribution packages
-build/             # Build output directory
-.eggs/             # Another egg location
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
 
 # ------------------------------------------------------------
 # Virtual environments
 # ------------------------------------------------------------
-.venv/             # Most common virtual environment folder name
+.venv/
 venv/
 env/
 ENV/
@@ -45,12 +46,12 @@ htmlcov/
 # ------------------------------------------------------------
 # IDEs and editors
 # ------------------------------------------------------------
-.vscode/           # VS Code workspace settings (usually fine to commit, but personal)
-.idea/             # JetBrains IDE (PyCharm, etc.)
-*.swp              # Vim swap files
+.vscode/
+.idea/
+*.swp
 *.swo
-.DS_Store          # macOS Finder metadata
-Thumbs.db          # Windows thumbnail cache
+.DS_Store
+Thumbs.db
 
 # ------------------------------------------------------------
 # Generated output — we keep the folder but not the contents
