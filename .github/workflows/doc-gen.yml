@@ -1,0 +1,107 @@
+# ============================================================
+# doc-gen.yml — GitHub Actions workflow for PipelineDoc
+# ============================================================
+#
+# What this does:
+#   Every time code is pushed to the main branch, this workflow:
+#     1. Checks out your code
+#     2. Installs PipelineDoc
+#     3. Runs PipelineDoc against your pipeline folder
+#     4. Commits the generated docs back to the repo
+#
+# This means your documentation ALWAYS stays in sync with your code.
+# Every push → fresh docs. No manual steps needed.
+#
+# HOW TO SET UP:
+#   1. In your GitHub repo, go to:
+#      Settings → Secrets and variables → Actions → New repository secret
+#   2. Add a secret named:  ANTHROPIC_API_KEY
+#      with your real API key as the value
+#
+# CUSTOMIZE:
+#   - Change `PIPELINE_FOLDER` to point at your actual pipelines directory
+#   - Change the branch trigger if you use a different default branch
+# ============================================================
+
+name: Generate Pipeline Documentation
+
+on:
+  push:
+    branches:
+      - main          # Run on every push to main
+      - master        # Also run on master (older repos use this name)
+    paths:
+      - '**.py'       # Only trigger if Python files changed (saves API costs)
+
+  # Allow running this workflow manually from the GitHub Actions UI
+  workflow_dispatch:
+    inputs:
+      pipeline_folder:
+        description: 'Folder to scan (default: pipelines)'
+        required: false
+        default: 'pipelines'
+
+jobs:
+  generate-docs:
+    name: Generate Documentation
+    runs-on: ubuntu-latest   # Use a free Ubuntu runner provided by GitHub
+
+    # These permissions allow the workflow to push commits back to the repo
+    permissions:
+      contents: write
+
+    steps:
+      # ---- Step 1: Check out the repo ----
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # fetch-depth: 0 gets the full git history, needed for the commit step
+          fetch-depth: 0
+
+      # ---- Step 2: Set up Python ----
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          # cache: pip speeds up subsequent runs by reusing downloaded packages
+          cache: "pip"
+
+      # ---- Step 3: Install PipelineDoc and its dependencies ----
+      - name: Install PipelineDoc
+        run: |
+          pip install --upgrade pip
+          pip install .
+
+      # ---- Step 4: Run PipelineDoc ----
+      # The PIPELINE_FOLDER variable controls which directory to scan.
+      # Change "pipelines" to match your project's folder name.
+      - name: Run PipelineDoc
+        env:
+          # This injects the GitHub secret into the process environment.
+          # PipelineDoc's config.py reads it with os.getenv("ANTHROPIC_API_KEY")
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          PIPELINE_FOLDER: ${{ github.event.inputs.pipeline_folder || 'pipelines' }}
+        run: |
+          pipelinedoc run "$PIPELINE_FOLDER" --output-dir output
+
+      # ---- Step 5: Commit and push the generated docs ----
+      # This step only runs if there are actual changes to commit.
+      - name: Commit generated documentation
+        run: |
+          # Configure git with a "bot" identity for the commit
+          git config user.name  "PipelineDoc Bot"
+          git config user.email "pipelinedoc-bot@users.noreply.github.com"
+
+          # Stage the generated output files
+          git add output/pipeline-map.md output/pipeline-map.html
+
+          # Only commit if there are staged changes
+          # `git diff --cached --quiet` exits with code 0 if nothing is staged
+          if git diff --cached --quiet; then
+            echo "No documentation changes to commit."
+          else
+            git commit -m "docs: auto-update pipeline documentation [skip ci]"
+            # [skip ci] in the commit message prevents this commit from
+            # triggering another workflow run (which would loop forever)
+            git push origin HEAD
+          fi

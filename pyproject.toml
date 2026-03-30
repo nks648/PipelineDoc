@@ -1,0 +1,83 @@
+[build-system]
+# This tells pip HOW to build and install this package.
+# hatchling is a modern, simple build backend — preferred over the old setup.py approach.
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+# The official name of the package on PyPI (if you ever publish it)
+name = "pipelinedoc"
+
+# Version of the package — bump this when you release updates
+version = "0.1.0"
+
+# One-line description shown on PyPI
+description = "Auto-generate documentation for Python data pipelines using Claude AI"
+
+# Points to the README file — PyPI will render this on the package page
+readme = "README.md"
+
+# Minimum Python version required to run this package
+requires-python = ">=3.11"
+
+# SPDX license identifier
+license = { text = "MIT" }
+
+# Who to contact about the package
+authors = [
+  { name = "PipelineDoc Contributors" }
+]
+
+# Keywords help people find this on PyPI
+keywords = ["documentation", "pipeline", "etl", "ai", "claude", "anthropic"]
+
+# Trove classifiers — used by PyPI for filtering
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Documentation",
+  "Topic :: Software Development :: Documentation",
+]
+
+# Runtime dependencies — installed automatically when users run `pip install pipelinedoc`
+dependencies = [
+  "anthropic>=0.40.0",       # Official Anthropic SDK for Claude API calls
+  "click>=8.1.0",             # CLI framework — handles argument parsing and --help
+  "rich>=13.0.0",             # Beautiful terminal output: colors, tables, progress bars
+  "python-dotenv>=1.0.0",    # Loads .env files into environment variables
+  "jinja2>=3.1.0",            # HTML templating engine for the HTML output
+]
+
+[project.optional-dependencies]
+# These are installed with: pip install pipelinedoc[dev]
+dev = [
+  "pytest>=7.0.0",            # Testing framework
+  "pytest-cov>=4.0.0",        # Test coverage reporting
+]
+
+[project.urls]
+# Links shown on the PyPI package page
+Homepage = "https://github.com/nks648/pipelinedoc"
+Repository = "https://github.com/nks648/pipelinedoc"
+Issues = "https://github.com/nks648/pipelinedoc/issues"
+
+[project.scripts]
+# This is how the CLI command is registered.
+# After installing the package, typing `pipelinedoc` in the terminal
+# will call the `cli` function inside `pipelinedoc/cli.py`.
+pipelinedoc = "pipelinedoc.cli:cli"
+
+[tool.hatch.build.targets.wheel]
+# Tell hatch which directory contains the actual Python package code
+packages = ["pipelinedoc"]
+
+[tool.pytest.ini_options]
+# Where pytest looks for tests
+testpaths = ["tests"]
+
+# Display extra output during test runs
+addopts = "-v"

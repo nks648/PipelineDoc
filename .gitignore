@@ -1,0 +1,65 @@
+# ============================================================
+# PipelineDoc .gitignore
+# ============================================================
+# This file tells git which files to NEVER track or commit.
+# Lines starting with # are comments.
+
+# ------------------------------------------------------------
+# SECRETS — never commit these
+# ------------------------------------------------------------
+.env               # Your real API keys live here — keep it local
+*.pem              # SSL certificates
+*.key              # Private keys
+secrets.json
+
+# ------------------------------------------------------------
+# Python build artifacts
+# ------------------------------------------------------------
+__pycache__/       # Compiled bytecode cache
+*.py[cod]          # .pyc, .pyo, .pyd compiled files
+*.so               # Compiled C extensions
+*.egg              # Old Python egg packages
+*.egg-info/        # Package metadata from setuptools
+dist/              # Built distribution packages
+build/             # Build output directory
+.eggs/             # Another egg location
+
+# ------------------------------------------------------------
+# Virtual environments
+# ------------------------------------------------------------
+.venv/             # Most common virtual environment folder name
+venv/
+env/
+ENV/
+.virtualenv/
+
+# ------------------------------------------------------------
+# Testing & coverage
+# ------------------------------------------------------------
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+
+# ------------------------------------------------------------
+# IDEs and editors
+# ------------------------------------------------------------
+.vscode/           # VS Code workspace settings (usually fine to commit, but personal)
+.idea/             # JetBrains IDE (PyCharm, etc.)
+*.swp              # Vim swap files
+*.swo
+.DS_Store          # macOS Finder metadata
+Thumbs.db          # Windows thumbnail cache
+
+# ------------------------------------------------------------
+# Generated output — we keep the folder but not the contents
+# ------------------------------------------------------------
+# The .gitkeep file in output/ tracks the empty folder.
+# Generated .md and .html files are regenerated on every run,
+# so we don't commit them (they'd create noisy diffs).
+output/*.md
+output/*.html
+
+# However, keep the .gitkeep so the folder exists in the repo:
+!output/.gitkeep
