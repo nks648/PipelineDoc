@@ -8,6 +8,77 @@ No manual writing. No stale docs. Every git push regenerates everything automati
 
 ---
 
+## Why PipelineDoc exists
+
+Most data teams have the same problem: pipelines grow, engineers leave, and nobody truly knows what the code does anymore. You open a file called `final_etl_v3_REAL.py` and spend 45 minutes reverse-engineering it before touching anything.
+
+PipelineDoc fixes that. It turns code nobody reads into documentation everyone can use — and keeps it current automatically, with zero effort after the first setup.
+
+---
+
+## Benefits & Impact
+
+### For you, the developer
+
+**Stop explaining your own code.**
+When a colleague asks "what does this pipeline do?", send them a link to the generated docs instead of writing a Slack essay. PipelineDoc writes the explanation once, keeps it updated, and you never have to repeat yourself.
+
+**Onboard new teammates in minutes, not days.**
+A new engineer joining the team can read the pipeline map and understand the entire data ecosystem — what runs, what it touches, what could break — before writing a single line of code. Time-to-productivity drops dramatically.
+
+**Catch risks you've stopped seeing.**
+When you've worked with a file for months you stop noticing things like "this has no retry logic" or "this hardcodes a prod database URL". Claude reads every file with fresh eyes and flags those issues in the Risks section every time docs are regenerated.
+
+**Find things fast.**
+The dependency table shows you at a glance which files talk to Stripe, which use pandas, which write to Postgres. Searching your entire codebase to answer "which pipelines hit the payments API?" becomes a one-second scan.
+
+---
+
+### For your team
+
+**Single source of truth.**
+Docs live in the repo, next to the code, versioned in git. Not in a Confluence page nobody updated since 2022. Not in someone's head. Not in a Notion doc that drifted the moment the code changed.
+
+**Non-engineers can understand what pipelines do.**
+Product managers, analysts, and stakeholders can read the HTML output in a browser without touching a code editor. They can see what data flows where, what external services are involved, and what the risks are — in plain English.
+
+**Documentation that's impossible to forget.**
+Because it's automated, there's no step where a developer has to remember to update the docs. Every push to `main` triggers a fresh regeneration. The docs are always current by definition.
+
+**Shared risk awareness.**
+The compiled Risks section at the bottom of every doc aggregates every warning Claude found across all files into one list. Your whole team sees the same set of concerns. Nothing is siloed.
+
+---
+
+### For the business
+
+**Faster incident response.**
+When a pipeline breaks at 2am, the on-call engineer can read the docs to understand what the pipeline does, what it depends on, and what's most likely to fail — before they've even opened the source file.
+
+**Reduced bus factor.**
+"Bus factor" is how many people need to leave before knowledge is lost. PipelineDoc encodes pipeline knowledge into persistent, searchable documentation. When someone leaves the team, understanding doesn't leave with them.
+
+**Audit and compliance evidence.**
+The generated docs show exactly what each pipeline does, where data comes from, and where it goes. That's directly useful for data governance, GDPR/CCPA compliance reviews, and security audits.
+
+**Better technical decision-making.**
+When you're deciding whether to refactor, retire, or replace a pipeline, the dependency map tells you immediately what else relies on it and what external services would be affected. Decisions that used to take a week of archaeology take minutes.
+
+---
+
+### The before and after
+
+| Before PipelineDoc | After PipelineDoc |
+|---|---|
+| "I'll have to read the code to tell you" | Shareable docs, ready in seconds |
+| New engineer needs a week to understand the stack | New engineer reads the pipeline map in 30 minutes |
+| Docs are 6 months out of date | Docs regenerate on every push, always current |
+| Risks live in senior engineers' heads | Risks are written down and visible to everyone |
+| "Which pipeline writes to the payments table?" requires grepping | Answered in 5 seconds from the dependency table |
+| Incident response starts with archaeology | Incident response starts with context |
+
+---
+
 ## Table of Contents
 
 1. [What it produces](#what-it-produces)
