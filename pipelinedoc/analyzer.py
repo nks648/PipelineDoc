@@ -21,14 +21,16 @@ import anthropic      # Anthropic SDK: the official client for Claude API calls
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from rich.console import Console
 
-from pipelinedoc.config import ANTHROPIC_API_KEY, MODEL, MAX_TOKENS
+from pipelinedoc.config import require_api_key, MODEL, MAX_TOKENS
 
 # Create a Rich console for printing colored output to the terminal
 console = Console()
 
-# Initialize the Anthropic client once (not inside the function, for efficiency)
-# The client automatically uses ANTHROPIC_API_KEY from the environment
-client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+# Initialize the Anthropic client once (not inside the function, for efficiency).
+# require_api_key() validates the key is present and raises a clear error if not.
+# This runs at import time for analyzer.py, which is fine — the analyzer always
+# needs the key. But parser.py and renderer.py never import this module.
+client = anthropic.Anthropic(api_key=require_api_key())
 
 
 def _build_prompt(structure: dict) -> str:

@@ -30,29 +30,41 @@ load_dotenv()
 # os.getenv() returns the value of an environment variable, or None if missing.
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
-# If the key is missing, we raise a helpful error right away.
-# We do this at import time so the user sees the error immediately,
-# not buried halfway through a run after processing 50 files.
-if not ANTHROPIC_API_KEY:
-    raise EnvironmentError(
-        "\n"
-        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-        "  ERROR: ANTHROPIC_API_KEY is not set\n"
-        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-        "\n"
-        "  PipelineDoc needs an Anthropic API key to analyze your files.\n"
-        "\n"
-        "  To fix this:\n"
-        "    1. Copy .env.example to .env\n"
-        "         cp .env.example .env\n"
-        "\n"
-        "    2. Open .env and paste your key:\n"
-        "         ANTHROPIC_API_KEY=sk-ant-your-key-here\n"
-        "\n"
-        "    3. Get a key at: https://console.anthropic.com/\n"
-        "\n"
-        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-    )
+# -------------------------------------------------------------------
+# Step 3: Validation function — called only when the API key is needed
+# -------------------------------------------------------------------
+# We do NOT raise at import time because modules like parser.py import
+# config.py but never touch the API. Raising at import time would break
+# `pytest` and any code that only uses the parser or renderer.
+# Instead, analyzer.py calls this function before making its first API call.
+def require_api_key() -> str:
+    """
+    Returns the API key if set, or raises a clear, friendly error if missing.
+
+    Call this only in code that actually needs the Anthropic API (analyzer.py).
+    Do NOT call it in parser.py, renderer.py, or tests.
+    """
+    if not ANTHROPIC_API_KEY:
+        raise EnvironmentError(
+            "\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            "  ERROR: ANTHROPIC_API_KEY is not set\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            "\n"
+            "  PipelineDoc needs an Anthropic API key to analyze your files.\n"
+            "\n"
+            "  To fix this:\n"
+            "    1. Copy .env.example to .env\n"
+            "         cp .env.example .env\n"
+            "\n"
+            "    2. Open .env and paste your key:\n"
+            "         ANTHROPIC_API_KEY=sk-ant-your-key-here\n"
+            "\n"
+            "    3. Get a key at: https://console.anthropic.com/\n"
+            "\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        )
+    return ANTHROPIC_API_KEY
 
 
 # -------------------------------------------------------------------
